@@ -602,10 +602,10 @@ namespace Project_FinchControl
              
         }
 
-        private static void SetAlarm(Finch finchRobot, 
-            string senorToMonitor, 
-            string rangeType, 
-            int minMaxThreshhold, 
+        private static void SetAlarm(Finch finchRobot,
+            string senorToMonitor,
+            string rangeType,
+            int minMaxThreshhold,
             int timeToMonitor)
         {
             int currentSensorValue = 0;
@@ -614,60 +614,65 @@ namespace Project_FinchControl
 
             DisplayScreenHeader("Set Alarm");
 
-            Console.WriteLine($"Sensors to Monitor: {senorToMonitor}");
-            Console.WriteLine($"Range Type: {rangeType}");
-            Console.WriteLine($"{rangeType} Threshhold: {minMaxThreshhold}");
-            Console.WriteLine($"Time to Monitor: {timeToMonitor}");
+            Console.WriteLine($"\tSensors to Monitor: {senorToMonitor}");
+            Console.WriteLine($"\tRange Type: {rangeType}");
+            Console.WriteLine($"\t{rangeType} Threshhold: {minMaxThreshhold}");
+            Console.WriteLine($"\tTime to Monitor: {timeToMonitor}");
 
-            while((secondsElapsed < timeToMonitor) && !threshholdPassed)
+            while ((secondsElapsed < timeToMonitor) && !threshholdPassed)
             {
-                switch(senorToMonitor)
+                switch (senorToMonitor)
                 {
                     case "right":
                         currentSensorValue = finchRobot.getLeftLightSensor();
-                    break;
+                        break;
 
                     case "left":
                         currentSensorValue = finchRobot.getRightLightSensor();
-                    break;
+                        break;
 
                     case "both:":
                         currentSensorValue = finchRobot.getRightLightSensor()
-                            + finchRobot.getRightLightSensor() /2;
-                    break;
+                            + finchRobot.getRightLightSensor() / 2;
+                        break;
 
                 }
-                switch(rangeType)
+                switch (rangeType)
                 {
 
                     case "Minimum":
-                        if(currentSensorValue < minMaxThreshhold)
+                        if (currentSensorValue < minMaxThreshhold)
                         {
                             threshholdPassed = true;
                         }
-                    break;
+                        break;
 
                     case "Maximum":
-                        if (currentSensorValue > minMaxThreshhold);
+                        if (currentSensorValue > minMaxThreshhold) 
                         {
                             threshholdPassed = true;
                         }
-                    break;
+                        break;
                 }
+                finchRobot.wait(1000);
+                secondsElapsed++;
             }
 
-            if(threshholdPassed)
+            if (threshholdPassed)
             {
-                Console.WriteLine($"{rangeType} threshhold was exceeded by " +
-                    $"the current sensor value of {currentSensorValue}...");
+                Console.WriteLine($"\t{rangeType} threshhold was exceeded.");
             }
 
             else
             {
-                Console.WriteLine($"The {rangeType} vale of {minMaxThreshhold} was not exceeded...");
+                Console.WriteLine($"\tThe {rangeType} vale of {minMaxThreshhold} was not exceeded...");
             }
-            finchRobot.wait(1000);
-            secondsElapsed++;
+
+            Console.WriteLine($"\tLeft Sensor ambient value: {finchRobot.getLeftLightSensor()} ");
+            Console.WriteLine($"\tRight Sensor ambient value: {finchRobot.getRightLightSensor()} ");
+
+            DisplayMenuPrompt("Alarm System");
+
         }
 
         private static int TimeToMonitorMenu()
@@ -688,11 +693,11 @@ namespace Project_FinchControl
 
             DisplayScreenHeader("Alarm Threshold");
 
-            Console.WriteLine($"Left Sensor ambient value: {finchRobot.getLeftLightSensor()} ");
-            Console.WriteLine($"Right Sensor ambient value: {finchRobot.getRightLightSensor()} ");
+            Console.WriteLine($"\tLeft Sensor ambient value: {finchRobot.getLeftLightSensor()} ");
+            Console.WriteLine($"\tRight Sensor ambient value: {finchRobot.getRightLightSensor()} ");
             Console.WriteLine();
             
-            Console.Write($"Enter {rangeType} sensor value: ");
+            Console.Write($"\tEnter {rangeType} sensor value: ");
             int.TryParse(Console.ReadLine(), out minMaxThreshhold);
             //Echo and Validate
             return minMaxThreshhold;
