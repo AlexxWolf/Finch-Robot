@@ -623,15 +623,15 @@ namespace Project_FinchControl
             {
                 switch (senorToMonitor)
                 {
-                    case "right":
+                    case "LEFT":
                         currentSensorValue = finchRobot.getLeftLightSensor();
                         break;
 
-                    case "left":
+                    case "RIGHT":
                         currentSensorValue = finchRobot.getRightLightSensor();
                         break;
 
-                    case "both:":
+                    case "BOTH":
                         currentSensorValue = finchRobot.getRightLightSensor()
                             + finchRobot.getRightLightSensor() / 2;
                         break;
@@ -640,14 +640,14 @@ namespace Project_FinchControl
                 switch (rangeType)
                 {
 
-                    case "Minimum":
+                    case "MINIMUM":
                         if (currentSensorValue < minMaxThreshhold)
                         {
                             threshholdPassed = true;
                         }
                         break;
 
-                    case "Maximum":
+                    case "MAXIMUM":
                         if (currentSensorValue > minMaxThreshhold) 
                         {
                             threshholdPassed = true;
@@ -681,9 +681,21 @@ namespace Project_FinchControl
 
             DisplayScreenHeader("Time To Monitor");
 
-            Console.Write("\tEnter Time To Monitor: ");
-            int.TryParse(Console.ReadLine(), out timeToMonitor);
-            //Echo and Validate
+            do
+            {
+                Console.Write("\tEnter Time To Monitor: ");
+                int.TryParse(Console.ReadLine(), out timeToMonitor);
+
+                if(timeToMonitor == 0)
+                {
+                    Console.WriteLine("\tPlease enter a valid integer...");   
+                }
+            } while (timeToMonitor == 0);
+
+            Console.WriteLine($"\tYou Entered: {timeToMonitor}");
+
+            DisplayMenuPrompt("Set Alarm");
+
             return timeToMonitor;
         }
 
@@ -696,21 +708,57 @@ namespace Project_FinchControl
             Console.WriteLine($"\tLeft Sensor ambient value: {finchRobot.getLeftLightSensor()} ");
             Console.WriteLine($"\tRight Sensor ambient value: {finchRobot.getRightLightSensor()} ");
             Console.WriteLine();
-            
-            Console.Write($"\tEnter {rangeType} sensor value: ");
-            int.TryParse(Console.ReadLine(), out minMaxThreshhold);
-            //Echo and Validate
+
+            do
+            {
+                Console.Write($"\tEnter {rangeType} sensor value: ");
+                int.TryParse(Console.ReadLine(), out minMaxThreshhold);
+
+                if(minMaxThreshhold ==0)
+                {
+                    Console.WriteLine("\tPlease enter a valid integer...");
+                }
+
+            } while (minMaxThreshhold == 0);
+
+            Console.WriteLine($"\tYou endered: {minMaxThreshhold}");
+
+            DisplayMenuPrompt("Alarm System");
+
             return minMaxThreshhold;
         }
 
         private static string AlarmRangeType()
         {
-            string rangeType;
+            string rangeType = null;
+            bool validRessponse = false;
 
             DisplayScreenHeader("\tSet Range Type");
+           
+            while (!validRessponse)
+            {
+                Console.WriteLine("\tWhich Range Type will our alarm be monitoring for? (Minimum or Maximum)");
+                rangeType = Console.ReadLine().ToUpper();
 
-            Console.WriteLine("\tWhich Range Type will our alarm be monitoring for? (Minimum or Maximum)");
-            rangeType = Console.ReadLine();
+                switch(rangeType)
+                {
+                    case "MINIMUM":
+                        validRessponse = true;
+                        break;
+
+                    case "MAXIMUM":
+                        validRessponse = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("\tPlease enter a valid response...");
+                        break;
+
+
+                }
+            }
+
+            Console.WriteLine($"\tOur Finch Robot will alarm if a {rangeType} value is suprassed.");
 
             DisplayMenuPrompt("Alarm System");
 
@@ -720,13 +768,39 @@ namespace Project_FinchControl
 
         private static string SensorToMonitorMenu()
         {
-            string sensorsToMonitor; 
+            string sensorsToMonitor = null;
+            bool validResponse = false;
 
             DisplayScreenHeader("\tSensors to Monitors");
 
-            Console.WriteLine("\tWhich sensor(s) will we be using? (Left, Right, or Both)");
-            sensorsToMonitor = Console.ReadLine();
-            
+            while (!validResponse)
+            {
+                Console.WriteLine("\tWhich sensor(s) will we be using? (Left, Right, or Both)");
+                sensorsToMonitor = Console.ReadLine().ToUpper();
+                
+                switch(sensorsToMonitor)
+                {
+                    case "LEFT":
+                        Console.WriteLine("\tWe will be using the finch's Left sensor");
+                        validResponse = true;
+                        break;
+
+                    case "RIGHT":
+                        Console.WriteLine("\tWe will be using the finch's Right sensor");
+                        validResponse = true;
+                        break;
+
+                    case "BOTH":
+                        Console.WriteLine("\tWe will be using both the finch's sensors");
+                        validResponse = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("\tPlease enter a valid response...");
+                        break;
+
+                }
+            }
             DisplayMenuPrompt("Alarm System");
 
             return sensorsToMonitor;
